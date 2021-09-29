@@ -3,6 +3,8 @@
 A simple tool to create batch-transactions to send HPB (not HRC20) on the HPB network
 to multiple destinations in a single transaction.
 
+![HPB batch sender](http://url/to/img.png)
+
 ## Features
 
 - allows you to use less than 21000 gas per receiver, when sending HPB to 4 addresses or more
