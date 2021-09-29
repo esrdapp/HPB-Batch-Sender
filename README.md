@@ -1,20 +1,11 @@
-# ETH Batch Sending
+# HPB Batch Sending Tool
 
-Simple tool to create batch-transactions to send ETH (not ERC20) on the Ethereum network
+A simple tool to create batch-transactions to send HPB (not HRC20) on the HPB network
 to multiple destinations in a single transaction.
-
-### Live deployed at: https://ethbatchsend.zweng.at/
-
-## Demo video
-
-https://user-images.githubusercontent.com/285900/120294783-d521b000-c2c6-11eb-8b3f-294b420897a7.mp4
-
-Transaction from demo video: https://ropsten.etherscan.io/tx/0x0ea60a0caed8034b492e81761859b17d2469bf138b972b4c937ccbb922d23787
-
 
 ## Features
 
-- allows to use less than 21000 gas per receiver, when sending ETH to 4 addresses or more
+- allows you to use less than 21000 gas per receiver, when sending HPB to 4 addresses or more
 - validates addresses before sending
 - checks if addresses fulfill all needed state-requirements (and does not allow to send if these 
   are not fulfilled).
@@ -24,24 +15,20 @@ Transaction from demo video: https://ropsten.etherscan.io/tx/0x0ea60a0caed8034b4
 
 - [MetaMask](https://metamask.io/) must be installed in the browser 
 - It's only cheaper than single transactions when sending to 4 or more destinations at once
-- It only supports EAOs (external owned accounts, aka "private key addresses"), **NO SmartContracts**!
+- It only supports private key addresses **NO SmartContracts**!
 - The destination addresses **must have been used before on chain** (must have had some 
   transaction in the past or some balance --> see below for technical details about this)
 
-## Ethereum technical details
+## HPB technical details
 
 The tool simply creates a "contract deployment" transaction (i.e. transaction where `to:` is `null`).
-The `data` field ist constructed with Ethereum [EVM OP-Codes](https://ethervm.io/) which send ETH 
+The `data` field ist constructed with HPB [EVM OP-Codes](https://ethervm.io/) which send HPB 
 to all the destinations.
 
-In essence it just uses one OP-Code [`CALL`](https://ethervm.io/#F1) per destination to send the ETH
+In essence it just uses one OP-Code [`CALL`](https://ethervm.io/#F1) per destination to send the HPB
 and at the end one final OP-Code [`SELFDESTRUCT`](https://ethervm.io/#FF) to collect and refund the 
-remaining ETH to the sender and also to benefit from the gas refund (each `SELFDESTRUCT` OP-Code
+remaining HPB to the sender and also to benefit from the gas refund (each `SELFDESTRUCT` OP-Code
 reduces the gas-counter of a transaction by 24000).
-
-(_NOTE_: With the "London" hardfork [ EIP-3529: Reduction in refunds](https://eips.ethereum.org/EIPS/eip-3529)
-will go live, which will remove the 24000 gas refund for `SELFDESTRUCT`. 
-See: https://github.com/ethereum/eth1.0-specs/blob/master/network-upgrades/mainnet-upgrades/london.md).
 
 All the remaining OP-Codes are just `PUSH` or `DUP` OP-Codes to set up the values on the stack
 which are expected by `CALL` and `SELFDESTRUCT`.
@@ -62,7 +49,7 @@ This is in detail:
 - `80` = `DUP1`: --> duplicate the last value on stack (the `0x00` from above)
 - `68 0000abcdef12345678` = `PUSH9 xxxxxxx`: --> push a 9-byte long value to the stack, which will be 
    the amount to send (in wei, as a hexadecimal number, so the `0000abcdef12345678` in this example 
-   represent `0.048358647703819896` ETH to be sent)
+   represent `0.048358647703819896` HPB to be sent)
 - `73 xxxx…xxxxx` = `PUSH20 xxx…xxxx`: --> push a 20-byte long value to the stack, which will be 
    the destination address
 - `82` = `DUP3` --> duplicate the 3rd value (copy another `0x00` from the ones we have pushed/dup'ed above) 
@@ -86,7 +73,7 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx    // "addr": destination
 All of this will be added **per destination address**!
 
 
-### Collect remaining ETH at the end:
+### Collect remaining HPB at the end:
 
 After the last destination the following code is added:
 
@@ -114,18 +101,6 @@ does not exist in the state trie yet, and will be therefore much more expensive 
 
 --> This is the rationale why this tool checks before sending if all destination addresses have
     been used before (otherwise sending in batch would be more expensive than a single transaction).
-
-
-
-## Examples:
-
-- Transaction on Ropsten testnet to 30 destinations at once: [Tx on Etherscan](https://ropsten.etherscan.io/tx/0x9a8167343507a17655be2b0daf70178328c9656c386aca723b3192aded2db6d2)
-- Transaction on Ropsten testnet to 150 destinations at once: [Tx on Etherscan](https://ropsten.etherscan.io/tx/0x855d7878db975b3beb3e37aa0360539020448a7c4ca5c0b315c7a6ad977885bf)
-
-### Useful tools:
-
-You can look up the example transactions above and copy the content of the `Input data` field and disassemble 
-them with a tool like [https://etherscan.io/opcode-tool](https://etherscan.io/opcode-tool).
 
 
 ## Development setup
