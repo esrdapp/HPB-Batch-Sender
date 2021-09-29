@@ -3,7 +3,7 @@
 A simple tool to create batch-transactions to send HPB (not HRC20) on the HPB network
 to multiple destinations in a single transaction.
 
-![HPB batch sender](http://url/to/img.png)
+![HPB batch sender](https://github.com/esrdapp/HPB-Batch-Sender/blob/main/hpb%20batch%20sender.png)
 
 ## Features
 
