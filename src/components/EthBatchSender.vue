@@ -1,7 +1,7 @@
 <template>
-  <h1>HPB Batch Sender</h1>
+  <h1>HPB Bulk Sender</h1>
   <p>
-    Save gas by sending HPB to 4 or more addresses at once in a single transaction.<br><span
+    The tool allows you to send HPB to multiple accounts in a single transaction. Save gas by sending HPB to 4 or more addresses at once in a single transaction.<br><span
       class="details">(because of limitations imposed by the EVM this tool doesn't
     support contracts or unused addresses)</span>
   </p>
@@ -114,7 +114,7 @@
         </td>
         <td v-if="!dest.error" class="okRow">{{ dest.address }}
         </td>
-        <td v-if="!dest.error" class="okRow">{{ fromWeiStringToEth(dest.amountInWei) }} ETH</td>
+        <td v-if="!dest.error" class="okRow">{{ fromWeiStringToEth(dest.amountInWei) }} HPB</td>
         <td v-if="!dest.error && !destinationOnChainErrors[dest.address]" class="uncheckedRow">not
           checked (yet)
         </td>
@@ -131,7 +131,7 @@
   </div>
 
   <p class="footer">
-    <a href="https://github.com/esrdapp">Code on Github</a>
+    <a href="https://github.com/esrdapp/HPB-Batch-Sender">Code on Github</a>
   </p>
 
 </template>
@@ -607,8 +607,8 @@ export default {
       }
       let maxAmount = new BN('ffffffffffffffffff', 16);
       if (maxAmount.cmp(amountBn) <= 0) {
-        this.messages = 'amount per address is higher than supported (max 4722.36 ETH for now, as only 9 byte field)'
-        throw new Error('amount per address is higher than supported (max 4722.36 ETH for now)');
+        this.messages = 'amount per address is higher than supported (max 4722.36 HPB for now, as only 9 byte field)'
+        throw new Error('amount per address is higher than supported (max 4722.36 HPB for now)');
       }
       return amountInWei;
     }
