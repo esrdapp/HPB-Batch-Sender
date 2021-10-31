@@ -58,6 +58,10 @@
       <a :href="'https://hpbscan.org/tx/'+transactionId"
          target="_blank">{{ 'https://hpbscan.org/tx/' + transactionId }}</a>
     </span>
+    	<span v-if="eth && eth.chainId==='0x64'">
+      <a :href="'https://blockscout.com/xdai/mainnet/tx/'+transactionId"
+         target="_blank">{{ 'https://blockscout.com/xdai/mainnet/tx/' + transactionId }}</a>
+    </span>
   </p>
 
   <div v-if="destinationList.length>0">
@@ -497,6 +501,8 @@ export default {
         return 'Ethereum Goerli Test Network'
       } else if (parseInt(chainId) === 0x10D) {
         return 'HPB Network (Chain ID 269)'
+      } else if (parseInt(chainId) === 0x64) {
+        return 'xDai Network (Chain ID 100)'
       } else {
         return 'Some other network with chainId: "' + chainId + '"';
       }
